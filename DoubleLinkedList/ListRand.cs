@@ -47,8 +47,8 @@ namespace DoubleLinkedList
         
         public void Deserealize(BinaryReader s)
         {
-            
-            int[] randomIndexOfNode = new int[s.ReadInt32()];
+            int count = s.ReadInt32();
+            int[] randomNodeIndex = new int[count];
             
             // Read data form binary file and node
             while (s.PeekChar() > -1)
@@ -57,7 +57,7 @@ namespace DoubleLinkedList
                 string data = s.ReadString();
                 int cur = s.ReadInt32();
 
-                randomIndexOfNode[cur] = rand;
+                randomNodeIndex[cur] = rand;
 
                 Add(data);
             }
@@ -65,12 +65,25 @@ namespace DoubleLinkedList
             // Recover random links of each node
             ListNode currentNode = Head;
             int index = 0;
+            int middle = (count / 2) + 1;
             while (currentNode != null)
             {
-                var randomNode = Head;
-                for (int i = 0; i < randomIndexOfNode[index]; i++)
+                ListNode randomNode;
+                if (randomNodeIndex[index] <= middle)
                 {
-                    randomNode = randomNode.Next;
+                    randomNode = Head;
+                    for (int i = 0; i < randomNodeIndex[index]; i++)
+                    {
+                        randomNode = randomNode.Next;
+                    }
+                }
+                else
+                {
+                    randomNode = Tail;
+                    for (int i = count - 1; i > randomNodeIndex[index]; i--)
+                    {
+                        randomNode = randomNode.Prev;
+                    }
                 }
 
                 index++;
